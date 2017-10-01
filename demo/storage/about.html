@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>HTML5 API. Демонстрация: Web Storage.about</title>
+  <meta charset="UTF-8" />
+  <style>
+  </style>
+  <script>
+  </script>
+</head>
+
+<body>
+  <div id="info"></div>
+  <script>
+	  window.addEventListener("storage", showInfo, false);
+	  function showInfo(e){
+		  var div = document.getElementById("info");
+		  div.innerHTML += "<h4>Local storage updated</h4>";
+		  div.innerHTML += "Key: " + e.key;
+		  div.innerHTML += "<br/>Old value: " + e.oldValue;
+		  div.innerHTML += "<br/>New value: " + e.newValue;
+		  div.innerHTML += "<br/>URL: " + e.url;
+	  }
+  </script>
+</body>
+
+</html>

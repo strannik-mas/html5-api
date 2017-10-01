@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>HTML5 API. Лабораторная работа: Использование локальной базы данных</title>
+  <link href="style.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+  <label for="firstName">Имя:</label>
+  <input type="text" id="firstName">
+  <label for="lastName">Фамилия:</label>
+  <input type="text" id="lastName">
+  <label for="email">Email:</label>
+  <input type="text" id="email">
+  <label for="phone">Телефон:</label>
+  <input type="text" id="phone">
+  <button onclick="saveItem()">Сохранить</button>
+  <hr>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Имя</th>
+        <th>Фамилия</th>
+        <th>Email</th>
+        <th>Телефон</th>
+        <th>Изменить</th>
+        <th>Удалить</th>
+      </tr>
+    </thead>
+    <tbody id="output">
+      <tr>
+        <td colspan="7">&nbsp;</td>
+      </tr>
+    </tbody>
+  </table>
+  <button onclick="updateTable()">Показать всех</button>
+
+  <script>
+    var db;
+    var dbName = "addressBook";
+    var dbVersion = 1;
+    var tableName = "users";
+    var emptyHeader = "Записей в книге нет";
+	  //window.onload = updateTable;
+	  var openRequest = indexedDB.open(dbName, dbVersion);
+	  openRequest.onupgradeneeded = function(e){
+		 var thisDB = e.target.result; if(!thisDB.objectStoreNames.contains(tableName))
+			  thisDB.createObjectStore(tableName, {autoIncrement: true});
+		  
+		  console.log("Upgrading");
+	  }
+	  openRequest.onsuccess = function(e){
+		  console.log("Success!");
+		  db = e.target.result;		  
+	  };
+	  openRequest.onerror = function(e){
+		  var err = e.target.error;
+		  console.log("Error: ", err.name+": "+err.message);
+	  };
+	  
+	  function updateTable(){
+		  var body = document.getElementById("output");
+		  //console.log();
+		  while(body.hasChildNodes()){
+			body.removeChild(body.firstChild);
+		}
+		  var transaction = db.transaction([tableName], "readonly");
+		  var store = transaction.objectStore(tableName);
+		  var cursor = store.openCursor();
+		  var i = 0;
+		  cursor.onsuccess = function(e){
+			  var res = e.target.result;
+			  //console.log();
+			  if(!res && i == 0){
+				  var tr = document.createElement('TR');
+					var td = document.createElement('TD');
+					td.setAttribute('colspan', 7);
+					td.innerHTML = emptyHeader;
+					tr.appendChild(td);
+					body.appendChild(tr);
+			  }
+			  if(res){
+				  /*
+				  var row = body.insertRow(i++);
+				  var cell = row.insertCell(0);
+				  cell.innerHTML = res.key;
+				  var cell = row.insertCell(1);
+				  cell.innerHTML = res.key;
+				  var cell = row.insertCell(1);
+				  cell.innerHTML = res.value.firstName;
+				  cell.id = "inputFirstName" + res.key;
+				  cell.contentEditable = true;
+				  var cell = row.insertCell(2);
+				  cell.innerHTML = res.value.lastName;
+				  cell.id = "inputLastName" + res.key;
+				  cell.contentEditable = true;
+				  var cell = row.insertCell(3);
+				  cell.innerHTML = res.value.email;
+				  cell.id = "inputEmail" + res.key;
+				  cell.contentEditable = true;
+				  var cell = row.insertCell(4);
+				  cell.innerHTML = res.value.phone;
+				  cell.id = "inputPhone" + res.key;
+				  cell.contentEditable = true;
+				  var cell = row.insertCell(5);
+				  cell.innerHTML = "<span class='action' onclick='updateItem(\""+res.key+"\")'>Изменить</span>";
+				  var cell = row.insertCell(6);
+				  cell.innerHTML = "<span class='action' onclick='deleteItem(\""+res.key+"\")'>Удалить</span>";
+				  */
+				  
+				  var tr = document.createElement('TR');
+				  var s_upd = document.createElement('SPAN');
+				  s_upd.innerHTML = 'Изменить';
+				  s_upd.onclick = function (e){updateItem.call(this, res.key)};
+				var s = document.createElement('SPAN');
+				s.innerHTML = 'X';
+				s.onclick = function (e){deleteItem.call(this, res.key)};
+				  for(var j=0; j<document.getElementsByTagName('TH').length; j++){
+					  var td = document.createElement('TD');
+					  var input = document.createElement('INPUT');
+					  input.setAttribute("type", "text");
+					switch(j){
+						case 0: 
+							td.innerHTML = res.key;
+							break;
+						case 1:
+							input.setAttribute("value", res.value["firstName"]);
+							input.setAttribute("id", "firstName" + res.key);
+							td.appendChild(input);	
+							break;
+						case 2:
+							input.setAttribute("value", res.value["lastName"]);
+							td.appendChild(input);
+							input.setAttribute("id", "lastName" + res.key);
+							break;
+						case 3:
+							input.setAttribute("value", res.value["email"]);
+							td.appendChild(input);
+							input.setAttribute("id", "email" + res.key);
+							break;
+						case 4:
+							input.setAttribute("value", res.value["phone"]);
+							td.appendChild(input);
+							input.setAttribute("id", "phone" + res.key);
+							break;
+						case 5:
+							td.appendChild(s_upd);
+							break;
+						case 6:
+							td.appendChild(s);
+							break;
+					}
+					  tr.appendChild(td);
+				  }
+				  body.appendChild(tr);
+				  i++;
+				  res.continue();
+			  }
+		  }
+	  }
+	  
+	  function saveItem(){
+		var fn = document.getElementById("firstName").value;
+		var ln = document.getElementById("lastName").value;
+		var email = document.getElementById("email").value;
+		var phone = document.getElementById("phone").value;
+		 var transaction = db.transaction([tableName], "readwrite");
+		  var store = transaction.objectStore(tableName);
+		  var zapis = {
+			  firstName: fn,
+			  lastName: ln,
+			  email: email,
+			  phone: phone
+		  };
+		  var request = store.add(zapis);
+		  request.onsuccess = function(e){console.log("Record added")};
+		  request.onerror = function(e){
+			  var err = e.target.error;
+		  		console.log("Error: ", err.name+": "+err.message);
+		  };
+	  }
+	  function updateItem(key){
+		  var fn = document.getElementById("firstName"+key).value;
+		var ln = document.getElementById("lastName"+key).value;
+		var email = document.getElementById("email"+key).value;
+		var phone = document.getElementById("phone"+key).value;
+		 var transaction = db.transaction([tableName], "readwrite");
+		  var store = transaction.objectStore(tableName);
+		  var zapis = {
+			  firstName: fn,
+			  lastName: ln,
+			  email: email,
+			  phone: phone
+		  };
+		  var request = store.put(zapis, key);
+		  request.onsuccess = function(e){console.log("Record updated")};
+		  request.onerror = function(e){
+			  var err = e.target.error;
+		  		console.log("Error: ", err.name+": "+err.message);
+		  };
+		  
+	  }
+	  function deleteItem(key){
+		  //console.log(key);
+		  if(confirm("Вы уверены, что хотите удалить эту запись?")){
+			  var transaction = db.transaction([tableName], "readwrite");
+			   var store = transaction.objectStore(tableName);
+		 	 store.delete(key);
+			updateTable();
+		}
+	  }
+	  
+    /*
+     **	
+      ЗАДАНИЕ
+      *******
+      Откройте соединение с базой данных (метод "open")
+      Опишите событие "onupgradeneeded", которое может произойти после соединения с базой данных:
+          - создайте таблицу tableName, если её на данный момент не существует
+      Опишите событие "onsuccess", которое может произойти после соединения с базой данных:
+       - проинициализируйте глобальную переменную "db"
+      Опишите событие "onerror", которое может произойти после соединения с базой данных:
+       - выведите в консоль описание ошибки
+      Опишите функцию updateTable(), которая перерисовывает таблицу и выводит все записи из базы данных	
+      Опишите функцию saveItem(), которая выбирает введённые значения и записывает их в базу данных
+      Опишите функцию updateItem(key), которая по переданному ключу изменяет текущую запись в базе данных
+      Опишите функцию deleteItem(key), которая по переданному ключу удаляет запись из базы данных
+   **
+   */
+  </script>
+</body>
+
+</html>

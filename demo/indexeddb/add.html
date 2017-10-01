@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>HTML5 API. Демонстрация: IndexedDB</title>
+	<script>
+		var isDB = false;
+		var db;
+		window.addEventListener("load", function(){
+			if("indexedDB" in window)
+				isDB = true; //console.log("Поддержка есть")
+			//else console.log("Поддержки нет");
+		}, false);
+	  /*if("indexedDB" in window) console.log("Поддержка есть")
+	  else console.log("Поддержки нет")*/
+  </script>
+</head>
+
+<body>
+
+  <script>
+	  /*if(isDB){
+		  
+	  }*/
+	  //var openRequest = indexedDB.open("mycourses", 1);
+	  var openRequest = indexedDB.open("mycourses-2", 2);
+	  openRequest.onupgradeneeded = function(e){
+		  var thisDB = e.target.result;
+		  if(!thisDB.objectStoreNames.contains("courses"))
+			  //thisDB.createObjectStore("courses", {keyPath: "title"});
+			  var store = thisDB.createObjectStore("courses", {autoIncrement: true});
+		  
+		  console.log("Upgrading");
+		  //создание индексов
+		  store.createIndex("idxTitle", "title", {unique:true});
+		  
+	  };
+	  openRequest.onsuccess = function(e){
+		  console.log("Success!");
+		  db = e.target.result;
+		  var transaction = db.transaction(["courses"], "readwrite");
+		  var store = transaction.objectStore("courses");
+		  var course = {
+			  title: "C",
+			  length: 32,
+			  description: "About C"
+		  };
+		  var request = store.add(course);
+		  request.onsuccess = function(e){console.log("Record added")};
+		  request.onerror = function(e){
+			  var err = e.target.error;
+		  		console.log("Error: ", err.name+": "+err.message);
+		  };
+	  };
+	  openRequest.onerror = function(e){
+		  var err = e.target.error;
+		  console.log("Error: ", err.name+": "+err.message);
+	  };
+  </script>
+</body>
+
+</html>

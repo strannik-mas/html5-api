@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>HTML5 API. Лабораторная работа: макетная сетка</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    
+    canvas {
+      display: block;
+      margin: 20px auto 0;
+      border: 1px dotted #ccc;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="c" width="500" height="300"></canvas>
+  <script>
+      var canvasWidth = 400;
+      var canvasHeight = 400;
+      cellWidth = 40;
+      color = "#fa2520";
+      
+      grid(canvasWidth, canvasHeight, cellWidth, color);
+      
+      function grid(cw, ch, w, c){
+          var canvas = document.getElementById("c");
+          var ctx = canvas.getContext("2d");
+          canvas.setAttribute("width", cw);
+          canvas.setAttribute("height", ch);
+          kolichestvo = Math.floor(Math.min(cw, ch)/w);
+          //console.log(kolichestvo);
+          
+          for(var i=0; i<=kolichestvo; i++){
+              //вертикальные линии
+                ctx.beginPath();
+                ctx.moveTo(i*w, 0);
+                ctx.lineTo(i*w, ch);
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = c;
+                ctx.stroke();
+              //горизонтальные линии
+                ctx.beginPath();
+                ctx.moveTo(0, i*w);
+                ctx.lineTo(cw, i*w);
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = c;
+                ctx.stroke();
+          }
+            
+      }
+    /*
+     **
+        ЗАДАНИЕ
+        *******
+        Написать функцию, которая отрисовывает макетную сетку на холсте.
+        Предусмотреть возможность изменение размеров холста, ячеек сетки и цвета.
+    **		
+    */
+  </script>
+</body>
+
+</html>

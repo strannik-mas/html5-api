@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>HTML5 API. Лабораторная работа: используем веб-работников</title>
+  <script>
+    /*
+     **	
+      ЗАДАНИЕ
+      *******
+      Создать файл для веб-работника
+      В файле описать функцию, которая принимает значение (кол-во итераций цикла)
+      В цикле высчитывается и возвращается процент выполнения данного цикла (По одному проценту).
+      По завершению цикла возвратить строку "Загрузка закончена"
+
+      По клику на кнопку реализовать следующий сценарий:
+      Создать веб-работника и передать ему число - кол-во итераций цикла
+      Возращающиеся значения записывать в <div id="d"> по шаблону:
+          "Загружено 10%"
+      Финальное значение должно быть:	"Загрузка закончена"
+      Можете добавить новый HTML5 элемент progress и изменять его значение
+      Можете добавить новый HTML5 элемент meter и изменять его значение
+    **
+    */
+	  
+  </script>
+  <style>
+	  progress{width: 250px; display: block}
+  </style>
+</head>
+
+<body>
+  <div id="d">Загружено на <span id="s" >0</span>%
+  </div>
+  <div>
+    <button id="b">Запустить цикл</button>
+  </div>
+	<progress id="p", value="0" max="100"></progress>
+    <script>
+	
+	  var div = document.getElementById('d');
+		var p = document.getElementById('p');
+		var s = document.getElementById('s');
+	  document.getElementById("b").onclick = function(){
+		  var worker = new Worker("worker.js");
+		  var self = this;
+		  worker.onmessage = function(event){
+			  //console.log(event.data);
+			  if(event.data.type == 1){
+				  div.innerHTML = event.data.msg;
+				  self.disabled = "";
+			  }else {
+				  s.firstChild.nodeValue = p.value = event.data.msg;
+			  }
+			  
+		  }
+		  worker.postMessage(100000);
+		  self.disabled = "disabled";
+	  }
+</script>
+</body>
+</html>

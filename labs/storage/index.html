@@ -1,0 +1,189 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>HTML5 API. Лабораторная работа: WebStorage</title>
+  <link href="style.css" rel="stylesheet" type="text/css">
+  <script>
+    var currentStorage = localStorage; // sessionStorage или localStorage
+    var emptyHeader = "Локальное хранилище пусто";
+
+    /*
+     **
+      ЗАДАНИЕ 1.
+      **********
+      Описать функцию updateTable, которая
+          -в цикле очищает таблицу (удаляет все tr в tbody)
+          -зачитывает данные из текущего хранилища
+          -если данных нет, создаёт tr с emptyHeader
+          -если есть, в цикле заполняет таблицу данными
+          -в колонку "Удалить" вставить span с текстом 'X' и повесить на его onclick ф-цию deleteItem, передав в качестве параметра ключ текущей записи в хранилище
+      Добавить функцию updateTable как обработчик события onload текущего окна
+    **
+    */
+	  window.onload = updateTable;
+    function updateTable() {
+		
+		var body = document.getElementById("output");
+		//console.log(body.firstChild);
+		while(body.hasChildNodes()){
+			body.removeChild(body.firstChild);
+		}
+		if(currentStorage.length){
+			for(var i=0; i<currentStorage.length; i++){
+				var key = currentStorage.key(i);
+				var item = currentStorage.getItem(key);
+				var tr = document.createElement('TR');
+				var s = document.createElement('SPAN');
+				s.innerHTML = 'X';
+				s.onclick = function (e){deleteItem.call(this, this.parentNode.parentNode.children[1].textContent);}
+				
+				//console.log(key, item);
+				for(var j=0; j<document.getElementsByTagName('TH').length; j++){
+					var td = document.createElement('TD');
+					switch(j){
+						case 0: 
+							td.innerHTML = i+1;
+							break;
+						case 1:
+							td.innerHTML = key;		
+							break;
+						case 2:
+							td.innerHTML = item;
+							break;
+						case 3:
+							td.appendChild(s);
+							break;
+					}
+					tr.appendChild(td);
+				}
+				body.appendChild(tr);
+			}
+		}else{
+			var tr = document.createElement('TR');
+			var td = document.createElement('TD');
+			td.setAttribute('colspan', 4);
+			td.innerHTML = emptyHeader;
+			tr.appendChild(td);
+			body.appendChild(tr);
+		}
+	}
+	  
+    /*
+     **
+        ЗАДАНИЕ 2.
+        **********
+        Описать функцию getStorage, которая
+            -выбирает текущее хранилище
+            -записывает результат в currentStorage
+            -вызывает функцию updateTable()
+    **
+    */
+    function getStorage() {
+		num_node = document.getElementById("storage").value;
+		switch(document.getElementById("storage").children[num_node].firstChild.nodeValue){
+			case 'localStorage': 
+				currentStorage = localStorage;
+				emptyHeader = "Локальное хранилище пусто";
+				break;
+			case 'sessionStorage':
+				currentStorage = sessionStorage;
+				emptyHeader = "Сессионное хранилище пусто";
+				break;
+		}
+		//console.log(currentStorage);
+		updateTable();
+	}
+
+
+    /*
+     **
+      ЗАДАНИЕ 3.
+      **********
+      Описать функцию saveItem, которая
+          -получает ключ и значение для новой записи
+          -спрашивает пользователя: "Вы уверены, что хотите полностью очистить локальное хранилище?"
+          -добавляет новую запись в хранилище
+          -вызывает updateTable()
+    **
+    */
+    function saveItem() {
+		var k = document.getElementById("key").value;
+		var v = document.getElementById("value").value;
+		if(confirm("Вы уверены, что хотите сохранить в хранилище?")){
+			currentStorage[k] = v;
+			updateTable();
+		}
+	}
+
+    /*
+     **
+      ЗАДАНИЕ 4.
+      **********
+      Описать функцию deleteItem, которая
+          -принимает в качестве параметра ключ текущей записи в хранилище
+          -спрашивает пользователя: "Вы уверены, что хотите удалить эту запись?"
+          -при положительном ответе пользователя удаляет запись из хранилища
+          -вызывает updateTable()
+    **
+    */
+    function deleteItem(key) {
+		//console.log(key);
+		if(confirm("Вы уверены, что хотите удалить эту запись?")){
+			currentStorage.removeItem(key);
+			updateTable();
+		}
+	}
+
+    /*
+     **
+      ЗАДАНИЕ 5.
+      **********
+      Описать функцию clearStorage, которая
+          -спрашивает пользователя: "Вы уверены, что хотите полностью очистить локальное хранилище?"
+          -при положительном ответе пользователя удаляет все записи из хранилища
+          -вызывает updateTable()
+    **
+    */
+    function clearStorage() {
+		if(confirm("Вы уверены, что хотите полностью очистить локальное хранилище?")){
+			currentStorage.clear();
+			updateTable();
+		}
+	}
+  </script>
+</head>
+
+<body>
+  <label for="storage">Выберите хранилище:</label>
+  <select id="storage" onchange="getStorage()">
+    <option value="0">localStorage</option>
+    <option value="1">sessionStorage</option>
+  </select>
+  <hr/>
+  <label for="key">Ключ:</label>
+  <input type="text" id="key" autofocus autocomplete="off">
+  <label for="value">Значение:</label>
+  <input type="text" id="value" autocomplete="off">
+  <button onclick="saveItem()">Сохранить</button>
+  <hr>
+  <table>
+    <thead>
+      <tr>
+        <th>№</th>
+        <th>Ключ</th>
+        <th>Значение</th>
+        <th>Удалить</th>
+      </tr>
+    </thead>
+    <tbody id="output">
+      <tr>
+        <td colspan="4">&nbsp;</td>
+      </tr>
+    </tbody>
+  </table>
+  <button onclick="clearStorage()">Очистить всё</button>
+</body>
+
+</html>

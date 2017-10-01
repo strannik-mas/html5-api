@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>HTML5 API. Демонстрация: объект FileReader</title>
+  <meta charset="utf-8" />
+  <style>
+  </style>
+  
+</head>
+
+<body>
+  One file:<input type="file" id="myFile"/><br/>
+	Many files<input type="file" id="myFiles" multiple/><br/>
+	Binary<input type="file" id="binary"/>
+  <div id="content"></div>
+  <img src="" id="myImage"/>
+  <script>
+    var output = document.getElementById("content");
+    var img = document.getElementById("myImage");
+	document.getElementById("binary").onchange = getBinary;
+	  function getBinary(e){
+		  var file = e.target.files[0];
+		  var out = "";
+		  var reader = new FileReader();
+		  reader.onload = function(e){
+			  var result = e.target.result;
+			  /*for (var i = 0; i<result.length; ++i){
+				  aByte = result.charCodeAt(i);
+				  byteStr = aByte.toString(16);
+				  out += byteStr + " ";
+			  }*/
+			  console.log(result);
+			  img.src = result;
+		  };
+		  //reader.readAsBinaryString(file);
+		  reader.readAsDataURL(file);
+	  }
+	  
+	  
+    document.getElementById("myFiles").onchange = getFiles;
+	  function getFiles(e){
+		  var files = e.target.files;
+		  for(var i = 0; i<files.length; ++i){
+			  var file = files[i];
+			  var reader = new FileReader();
+			  reader.onload = function(e){
+				  output.textContent += e.target.result;
+			  };
+	      	reader.readAsText(file, "utf-8");
+		  }		  
+	  }
+	  
+	  
+    document.getElementById("myFile").onchange = getFile;
+	  function getFile(e){
+		  var file = e.target.files[0];
+		  console.log(file.name, file.type, file.size);
+		  var reader = new FileReader();
+		  reader.onload = function(e){
+			  output.textContent = e.target.result;
+		  };
+	      reader.readAsText(file);
+	  }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,63 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>HTML5 API. Лабораторная работа: обтекание текстом</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    
+    canvas {
+      display: block;
+      margin: 20px auto 0;
+      border: 1px dotted #ccc;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="canvas" width="600" height="300"></canvas>
+  <script>
+    var text = "Lorem ipsum dolor sit amet, coram posset diam ' deo. Volentes mihi quidditas patria Utinam rediit in modo compungi mulierem ubi confudit huc est se sed. Suave canere se sed dominum in fuerat accidens quam dicentes parem. Erige me missam ne velocitate mare convivio ubi diu perdidi si non solutionem innocentem tantusque amorem infirmata dictum in. Lorem ipsum dolor sit amet, coram posset diam ' deo. Volentes mihi quidditas patria Utinam rediit in modo compungi mulierem ubi confudit huc est se sed. Suave canere se sed dominum in fuerat accidens quam dicentes parem. Erige me missam ne velocitate mare convivio ubi diu perdidi si non solutionem innocentem tantusque amorem infirmata dictum in.";
+    /*
+     **
+        ЗАДАНИЕ
+        *******
+        Отрисовать текст, который находится в переменной "text" на холсте "canvas", вписав его в границы данного холста.
+
+        ИСХОДНЫЕ ДАННЫЕ
+        ***************
+        Размер шрифта: 16pt
+        Имя шрифта: Arial
+        Межстрочный интервал: 25
+    **		
+    */
+      var fontName = "Arial";
+      var fontSize = "16pt";
+      var lineHeight = 25;
+      var color = "#56ad79"
+      textRedactor(fontName, fontSize, lineHeight, color, text);
+      
+      function textRedactor(fn, fs, h, c, t, w){
+          var canvas = document.getElementById("canvas");
+          var ctx = canvas.getContext("2d");
+          ctx.font = fs + fn;
+          var m = ctx.measureText(t);
+          var kolichestvo = Math.floor(m.width/canvas.width);
+          //alert(t);
+          ctx.textBaseline = "top";
+          ctx.fillStyle = c;
+          for(var i = 0; i<=kolichestvo; i++){
+              ctx.fillText(t, -i*(canvas.width-3) +5, i*h);
+              //alert(i*h);
+          }
+          
+          
+      }
+          
+  </script>
+</body>
+
+</html>

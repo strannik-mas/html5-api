@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>HTML5 API. Демонстрация: Drag-N-Drop</title>
+  <meta charset="utf-8" />
+  <style>
+    div {
+      width: 50px;
+      height: 50px;
+      border: 3px dotted grey;
+    }
+	  div#area {
+      width: 200px;
+      height: 200px;
+      border: 3px dotted green;
+    }
+  </style>
+  
+</head>
+
+<body>
+	<div draggable="true"></div>
+	<div id="area" ondragenter="dragEnter()" ondragleave="return dragLeave()" ondragover="return dragOver()" ondrop="drop()"></div>
+  <!--<div draggable="true" 
+	   ondragstart="dragStart()" 
+	   ondrag="drag()" 
+	   ondragend="dragEnd()"></div>-->
+  <script>
+    var div = document.getElementsByTagName("div")[0];
+	  
+	function dragEnter(){console.log("enter");}
+    function dragOver(){console.log("over"); return false;} //для того, чтоб работал drop
+    function dragLeave(){console.log("leave"); return false;} //для того, чтоб работал drop
+	function drop(){console.log("drop");}
+    function dragStart(){console.log("start");}
+    function drag(){console.log("drag");}
+    function dragEnd(){console.log("end");}
+  </script>
+</body>
+
+</html>

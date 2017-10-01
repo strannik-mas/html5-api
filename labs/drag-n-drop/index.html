@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>HTML5 API. Лабораторная работа: квадратики</title>
+  <meta charset="utf-8" />
+  <style>
+    div {
+      position: absolute;
+      padding: 0;
+      margin: 0;
+    }
+    
+    div#element-red,
+    div#element-gray,
+    div#element-yellow {
+      width: 50px;
+      height: 50px;
+      top: 50px;
+    }
+    
+    div#element-red {
+      background-color: red;
+      left: 30px;
+    }
+    
+    div#element-gray {
+      background-color: gray;
+      left: 100px;
+    }
+    
+    div#element-yellow {
+      background-color: yellow;
+      left: 170px;
+    }
+    
+    div#area-red,
+    div#area-gray,
+    div#area-yellow {
+      width: 50px;
+      height: 50px;
+      top: 120px;
+    }
+    
+    div#area-yellow {
+      border: 3px solid yellow;
+      left: 10px;
+    }
+    
+    div#area-red {
+      border: 3px solid red;
+      left: 100px;
+    }
+    
+    div#area-gray {
+      border: 3px solid gray;
+      left: 190px;
+    }
+  </style>
+  <script>
+    /*
+    **
+      ЗАДАНИЕ
+      *******
+      Реализовать перетаскивание квадратов залитых цветом в квадраты с рамками.
+      Квадрат конкретного цвета должен перетаскиваться только в квадрат с рамкой соответствующего цвета.
+      После отпускания кнопки манипулятора типа "мышь" квадрат с рамкой должен закраситься.
+      Пример:
+          Квадрат красного цвета можно перетянуть только на квадрат с красной рамкой.
+          После отработки события "drop" квадрат с красной рамкой должен покраситься в красный цвет.
+    **		
+    */
+  </script>
+</head>
+
+<body>
+  <div id="element-red" draggable="true"></div>
+  <div id="element-gray" draggable="true"></div>
+  <div id="element-yellow" draggable="true"></div>
+  <div id="area-red"></div>
+  <div id="area-gray"></div>
+  <div id="area-yellow"></div>
+</body>
+<script>
+	var box_red = document.getElementById("element-red");
+	var box_gray = document.getElementById("element-gray");
+	var box_yellow = document.getElementById("element-yellow");
+	var box_ar_red = document.getElementById("area-red");
+	var box_ar_gray = document.getElementById("area-gray");
+	var box_ar_yellow = document.getElementById("area-yellow");
+	box_red.ondragstart = onDragStart;
+	box_gray.ondragstart = onDragStart;
+	box_yellow.ondragstart = onDragStart;
+	
+	box_ar_gray.ondragenter = onDrag;
+	box_ar_red.ondragenter = onDrag;
+	box_ar_yellow.ondragenter = onDrag;
+	box_ar_gray.ondragover = onDrag;
+	box_ar_red.ondragover = onDrag;
+	box_ar_yellow.ondragover = onDrag;
+	box_ar_gray.ondrop = onDrop;
+	box_ar_red.ondrop = onDrop;
+	box_ar_yellow.ondrop = onDrop;
+	function onDragStart(e){
+		//event общий, устанавливаем "переменную" Text и присваиваем id картинки
+		e.dataTransfer.setData("Text", e.target.id);
+		e.dataTransfer.setDragImage(e.target, -10, -10);
+	}
+	
+	function onDrag(e){
+		e.stopPropagation();
+		e.preventDefault();
+	}
+	function onDrop(e){
+		e.stopPropagation();
+		e.preventDefault();
+		var re = /([^-]+)-(.+)/;
+		var data_element = e.dataTransfer.getData("Text").match(re)[2];
+		var data_area = e.target.getAttribute("id").match(re)[2];
+		
+		//console.log(data.match(re)[2]);
+		//console.log(e.target.getAttribute("id").match(re)[2]);
+		if(data_area == data_element)
+		{
+			//e.target.setAttribute("background", data_element);
+			//console.log(e.target.getAttribute("background"));
+			document.getElementById(e.target.getAttribute("id")).style.backgroundColor = data_element;
+		}
+			
+		
+		
+		
+		
+	}
+</script>
+</html>

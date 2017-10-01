@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>HTML5 API. Лабораторная работа: инвертирование цветов</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    
+    canvas {
+      display: block;
+      margin: 20px auto 0;
+      border: 1px dotted #ccc;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="canvas" width="540" height="360"></canvas>
+  <script>
+      var canvas = document.getElementById("canvas");
+      var ctx = canvas.getContext("2d");
+      var img = new Image();
+        img.src = "picture.jpg";
+        img.onload = function(){
+            ctx.drawImage(img, 0,0);
+            var imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            console.log(imgData);
+            for(var i=0; i<imgData.data.length; i+=4){
+                imgData.data[i+0] = 255-imgData.data[i+0];
+                imgData.data[i+1] = 255-imgData.data[i+1];
+                imgData.data[i+2] = 255-imgData.data[i+2];
+                imgData.data[i+3] = 255;
+            }
+            ctx.clearRect(0,0, canvas.width, canvas.height);
+            ctx.putImageData(imgData, 0, 0);
+            console.log(imgData);
+        }; 
+    /*
+     **
+        ЗАДАНИЕ
+        *******
+        Инвертировать картинку, то  есть
+        задать каждому пикселю противоположный цвет.
+        Пример результата: картинка "invert.png"
+
+        ИСХОДНЫЕ ДАННЫЕ
+        ***************
+        Картинка для работы: "picture.jpg"
+    **		
+    */
+  </script>
+</body>
+
+</html>

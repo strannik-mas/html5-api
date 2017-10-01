@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>HTML5 API. Демонстрация: Web workers</title>
+  <meta charset="utf-8" />
+  <style>
+    form,
+    label {
+      float: left
+    }
+    
+    form div {
+      text-align: right
+    }
+  </style>
+
+</head>
+
+<body>
+  <form action="#" method="post" onsubmit="return false">
+    <div>
+      <label for="n">Имя: </label>
+      <input id="n" type="text" name="name" placeholder="Ваше имя" />
+    </div>
+    <div>
+      <button id="b">Запустить цикл</button>
+    </div>
+    <div>
+      <button id="x">Передать имя</button>
+    </div>
+  </form>
+  <div id="d"></div>
+  <script>
+      var worker = new Worker("worker.js");
+      //div нужно сделать глобальным, т.к. ф-я onmessage не увидит его из локальной области
+      var div = document.getElementById('d');
+    document.getElementById("b").onclick = function () {
+      
+	  //div.innerHTML = someLoop();
+      worker.postMessage(1);
+	  //worker.terminate();
+      worker.onmessage = function(event){
+        div.innerHTML = event.data;
+      }
+	  
+    };
+    document.getElementById("x").onclick = function () {
+		//console.log('Кнопка нажата');
+        var name = document.getElementById('n');
+        //посылаем
+        worker.postMessage(name.value);
+        //принимаем
+        worker.onmessage = function(event){
+            console.log(event.data);
+        }
+		
+    };
+/*
+		function someLoop(n) {
+		  for (var x = 1; x <= 1000000000; ++x);
+		  return 'Цикл закончен' ;
+		}
+
+*/    
+  </script>
+</body>
+
+</html>

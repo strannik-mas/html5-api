@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>HTML5 API. Демонстрация: Web Storage</title>
+  <meta charset="UTF-8" />
+  <style>
+    form {
+      float: left
+    }
+    
+    form label {
+      float: left
+    }
+    
+    form div {
+      text-align: right
+    }
+  </style>
+  <script>
+    var txtName, txtAge, btnSave, btnGet;
+    window.onload = function () {
+      txtName = document.getElementById("n");
+      txtAge = document.getElementById("a");
+      btnSave = document.getElementById("b1");
+      btnGet = document.getElementById("b2");
+      btnAll = document.getElementById("b3");
+      btnSave.addEventListener('click', dataSave, false);
+      btnGet.addEventListener('click', dataGet, false);
+      btnAll.addEventListener('click', showStorage, false);
+
+    };
+
+	function showStorage(){
+		var ul= document.getElementById("list");
+		ul.innerHTML = "";
+		for(var i=0; i<localStorage.length; ++i){
+			var key = localStorage.key(i);
+			var item = localStorage.getItem(key);
+			ul.innerHTML += "<li>" +key + " : "+item+"</li>";
+		}
+	}
+    function dataSave() {
+		localStorage['name'] = txtName.value;
+		localStorage.setItem("age", txtAge.value);
+    }
+
+    function dataGet() {
+		txtName.value = localStorage['name'];
+		txtAge.value = localStorage.getItem("age");
+		//localStorage.removeItem('name');
+		//localStorage.clear();
+		//console.log(localStorage.length);
+		//console.log(localStorage['x']);
+		//console.log(localStorage.getItem('x'));
+    }
+  </script>
+</head>
+
+<body>
+  <form action="" onsubmit="return false">
+    <div>
+      <label for="n">Имя: </label>
+      <input id='n' type="text" name="name" />
+    </div>
+    <div>
+      <label for="a">Возраст: </label>
+      <input id='a' type="text" name="age" />
+    </div>
+    <div>
+      <button id="b1">Сохранить</button>
+      <button id="b2">Получить</button>
+      <button id="b3">Получить ВСЁ</button>
+	  <ul id="list"></ul>
+    </div>
+  </form>
+</body>
+
+</html>

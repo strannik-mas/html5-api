@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+
+<head>
+  <title>HTML5 API. Лабораторная работа: простая анимация</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    
+    canvas {
+      display: block;
+      margin: 20px auto 0;
+      border: 1px dotted #ccc;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="canvas" width="500" height="400"></canvas>
+  <script>
+    /*
+     **
+        ЗАДАНИЕ
+        *******
+        Нажимая на клавиши (стрелки вверх, вниз, вправо и влево) передвигать игрушку внутри холста.
+        Игрушка - картинка из 4 фрагментов.
+        При движении в том или ином направлении необходимо отрисовывать соответствующий фрагмент картинки:
+            вниз - фрагмент-1
+            влево - фрагмент-2
+            вверх - фрагмент-3
+            вправо - фрагмент-4
+        Дополнительно можно реализовать невозможность выйти за пределы холста.
+
+        ИСХОДНЫЕ ДАННЫЕ
+        ***************
+        Ширина всей картинки: 189
+        Высота всей картинки: 66
+        Ширина фрагментов: 48 ( у фрагмента-2 ширина: 45, можно проигнорировать )
+        Смещение позиции фрагментов по оси Х относительно общей ширины картинки:
+            фрагмент-1: 0
+            фрагмент-2: 51
+            фрагмент-3: 96
+            фрагмент-4: 153
+        Коды клавиш:
+            стрелка влево: 37
+            стрелка вверх: 38
+            стрелка вправо: 39
+            стрелка вниз: 40
+    **		
+    */
+      var canvas = document.getElementById("canvas");
+      var x = canvas.width/2;
+      var y = canvas.height/2;
+      window.onkeydown = handle;
+      function handle(e){
+          //alert(e.keyCode);
+          var dx = 5;
+          var dy = 5;
+          var img = new Image();
+          img.src = 'sprite.gif';
+          var context = canvas.getContext("2d");
+          
+          if (canvas.getContext) {
+              switch(e.keyCode){
+                  case 40:
+                      context.clearRect(0,0, canvas.width, canvas.height);
+                      if(y<=canvas.height-66)
+                        y += dy;
+                      img.onload = function () {
+                          context.drawImage(img, 0, 0, 48, 66, x, y, 48, 66);
+                        };
+                      break;
+                  case 37:
+                      context.clearRect(0,0, canvas.width, canvas.height);
+                      if(x>0)
+                        x -= dx;
+                      img.onload = function () {
+                          context.drawImage(img, 51, 0, 45, 66, x, y, 45, 66);
+                        };
+                      break;
+                    case 38:
+                      context.clearRect(0,0, canvas.width, canvas.height);
+                      if(y>0)
+                        y -= dy;
+                      img.onload = function () {
+                          context.drawImage(img, 96, 0, 48, 66, x, y, 48, 66);
+                        };
+                      break;
+                    case 39:
+                      context.clearRect(0,0, canvas.width, canvas.height);
+                      if(x<=canvas.width-40)
+                          x += dx;
+                        
+                      img.onload = function () {
+                          context.drawImage(img, 153, 0, 48, 66, x, y, 48, 66);
+                        };
+                      break;
+              }            
+          }
+      }
+  </script>
+</body>
+
+</html>
