@@ -46,7 +46,7 @@
 			  length: 32,
 			  description: "About C"
 		  };
-		  var request = store.add(course);
+		  var request = store.add(course/*, 1*/);
 		  request.onsuccess = function(e){console.log("Record added")};
 		  request.onerror = function(e){
 			  var err = e.target.error;

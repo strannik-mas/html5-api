@@ -26,6 +26,7 @@
     var ctx = canvas.getContext("2d");
     ctx.fillStyle = "yellow";
     ctx.fillRect(10,10,50,50);
+	/*
     var imgData = ctx.getImageData(10,10,50,50);
     //console.log(imgData);
     ctx.putImageData(imgData, 10, 70);
@@ -42,7 +43,7 @@
     //сохранение
     var dataURL = canvas.toDataURL("image/jpeg", 0.9);
     console.log(dataURL);
-    /*var img = new Image();
+    var img = new Image();
     img.src = "imgs/picture.jpg";
     img.onload = function(){
         ctx.drawImage(img, 150,0, 150, 150, 0,0, 150,150);
@@ -56,8 +57,8 @@
     ctx.globalAlpha = 0.75;
     ctx.arc(320, 120, 60,0,2*Math.PI, false);
     ctx.fillStyle = "gray";
-    ctx.fill();*/
-    
+    ctx.fill();
+    /*
     //установка стека
     var W = 150,
         H = 75,
@@ -88,7 +89,7 @@
     
     ctx.restore();
     ctx.fillStyle = "#abcdef";
-    ctx.fillRect(w,h,W,H);*/
+    ctx.fillRect(w,h,W,H);
     
     /*ctx.fillStyle = "yellow";
     ctx.fillRect(0,0,250,100);
@@ -230,7 +231,7 @@
     ctx.beginPath();
     ctx.arc(x,y,r, a1,a2,c);
     ctx.lineWidth = 5;
-    ctx.stroke();*/
+    ctx.stroke();
     //линия
     ctx.beginPath();
     ctx.moveTo(100, 50);
@@ -244,7 +245,7 @@
     ctx.lineWidth = 15;
     ctx.strokeStyle = "#ff0000"; //f00 или rgb(255,0,0) или red
     ctx.lineCap = "rou";
-    ctx.stroke();
+    ctx.stroke();*/
 </script>
 
 </html>
